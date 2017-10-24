@@ -16,10 +16,6 @@ class Polls::QuestionsController < ApplicationController
       answer.save!
       voter.save!
 
-      @question.question_answers.where(question_id: @question).each do |question_answer|
-        question_answer.set_most_voted
-      end
-
       @answers_by_question_id = { @question.id => params[:answer] }
     else
       flash.now[:error] = t("poll_questions.show.vote_error")
