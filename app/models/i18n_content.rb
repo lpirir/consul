@@ -54,8 +54,18 @@ class I18nContent < ApplicationRecord
   def self.translations_for(tab)
     I18n.backend.send(:init_translations) unless I18n.backend.initialized?
 
-    I18n.backend.send(:translations)[I18n.locale].select do |key, _translations|
-      key.to_s == tab.to_s
+    if tab.to_sym == :basic
+      basic_file = "#{Rails.root}/config/locales/#{I18n.locale}/basic.yml"
+
+      if File.exists?(basic_file)
+        I18n.backend.send(:load_file, basic_file)[I18n.locale.to_s]
+      else
+        {}
+      end
+    else
+      I18n.backend.send(:translations)[I18n.locale].select do |key, _translations|
+        key.to_s == tab.to_s
+      end
     end
   end
 end
